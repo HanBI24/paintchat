@@ -12,28 +12,27 @@ import java.awt.event.*;
 class ClientSendThread extends Thread {
 	Socket socket;
 	String name,na;
-
+	UserInterface a = new UserInterface();
 	public ClientSendThread(Socket socket) {
 		this.socket = socket;
 	}
 
 	public void run(){
-		UserInterface a = new UserInterface();
         try {
-            Scanner scanner =new Scanner(System.in); //½ºÄÉ³Ê »ı¼º
-            ObjectOutputStream objectOutputStream=new ObjectOutputStream(socket.getOutputStream()); //Object ¸¦ Ãâ·ÂÇÒ ½ºÆ®¸² »ı¼º //Ãâ·Â½ºÆ®¸² »ı¼º
-            System.out.print("´ëÈ­¸íÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä:");
+            Scanner scanner =new Scanner(System.in); //ìŠ¤ì¼€ë„ˆ ìƒì„±
+            ObjectOutputStream objectOutputStream=new ObjectOutputStream(socket.getOutputStream()); //Object ë¥¼ ì¶œë ¥í•  ìŠ¤íŠ¸ë¦¼ ìƒì„± //ì¶œë ¥ìŠ¤íŠ¸ë¦¼ ìƒì„±
+            System.out.print("ëŒ€í™”ëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”:");
             name=a.chatInputField.getText();
             
-            objectOutputStream.writeObject(name);//´ëÈ­¸í º¸³»±â±â
+            objectOutputStream.writeObject(name);//ëŒ€í™”ëª… ë³´ë‚´ê¸°ê¸°
            while(true){
-                ChatData chatData=new ChatData("["+name+"]"+scanner.nextLine()); //½ºÄÉ³Ê·Î ÀÔ·Âµ¥ÀÌÅÍ ¹Ş¾Æ chatData¿¡  ³ÖÀ½
-                objectOutputStream.writeObject(chatData);  // ChatData Object Àü¼Û
+                ChatData chatData=new ChatData("["+name+"]"+scanner.nextLine()); //ìŠ¤ì¼€ë„ˆë¡œ ì…ë ¥ë°ì´í„° ë°›ì•„ chatDataì—  ë„£ìŒ
+                objectOutputStream.writeObject(chatData);  // ChatData Object ì „ì†¡
 
                if(chatData.text=="/exit") break;
            }
             objectOutputStream.close();
-            socket.close(); //¼ÒÄÏ Á¾·á
+            socket.close(); //ì†Œì¼“ ì¢…ë£Œ
         }
         catch (IOException e) {
 			e.printStackTrace();
