@@ -1,109 +1,162 @@
-package socket;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-import java.awt.*;
-import java.awt.event.*;
+ import javax.swing.border.Border;
+ import java.awt.*;
+ import java.awt.event.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+ 
+ public class UserInterface extends JFrame {
 
-public class UserInterface extends JFrame {
+    //Í∑∏Î¶ºÌåê
+     JPanel paintPanel;
+     JPanel colorPanel;
+ 
+     JButton[] colorBtn=new JButton[6];
+     String[] colorBtnText={"red","orange","yellow","green","blue","pink"};
+     Color[] color={Color.red,Color.orange,Color.yellow,Color.green,Color.blue,Color.pink};
+ 
+     PaintCanvas paintCanvas;
+     
+     EchoThread ec;
+     
+     JComboBox jcb;
+ 
+     //Ï±ÑÌåÖ
+     JPanel chatPanel;
+     JPanel chatInputPanel;
+     JTextArea chatArea;
+     JTextField chatInputField;
+     JButton sendBtn;
+ 
 
-	// ±◊∏≤∆«
-	JPanel paintPanel;
-	JPanel colorPanel;
 
-	JButton[] colorBtn = new JButton[6];
-	String[] colorBtnText = { "red", "orange", "yellow", "green", "blue", "pink" };
-	Color[] color = { Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.pink };
-
-	PaintCanvas paintCanvas;
-	JComboBox jcb;
-
-	// √§∆√
-	JPanel chatPanel;
-	JPanel chatInputPanel;
-	JTextArea chatArea;
-	JTextField chatInputField;
-	JButton sendBtn;
-
-	public UserInterface(){
-        paintCanvas=new PaintCanvas();
-        colorPanel = new JPanel(new FlowLayout());
-        for(int i=0; i<6; i++){
-            colorBtn[i]=new JButton(colorBtnText[i]);
-            colorBtn[i].setBackground(color[i]);
-            colorPanel.add(colorBtn[i]);
-        }
-
-        String[] str = { "10", "15", "20", "25", "30" };
-        jcb = new JComboBox(str);
-
-        colorPanel.add(jcb);
-
-        paintPanel=new JPanel(new BorderLayout());
-        paintPanel.add(colorPanel, BorderLayout.NORTH);
-        paintPanel.add(paintCanvas,BorderLayout.CENTER);
-
-        ///
-        chatPanel=new JPanel(new BorderLayout());
-        chatArea = new JTextArea(15,40);
-        chatArea.setLineWrap(true); //¿⁄µø ∞≥«‡
-        chatArea.setWrapStyleWord(true); //«‡¿ª ≥—±Ê ∂ß «‡¿« ∏∂¡ˆ∏∑ ¥‹æÓ∞° µŒ«‡ø° ∞…√ƒ ≥™¥µ¡ˆ æ µµ∑œ «œ±‚
-        chatArea.setEditable(false);
-        chatArea.setVisible(true);
-        JScrollPane qScroller = new JScrollPane(chatArea);
-        qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); //ºˆ¡˜ Ω∫≈©∑—πŸ «•Ω√ ¡§√• : «◊ªÛ ∫∏ø©¡÷±‚
-        qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);// ºˆ∆Ú Ω∫≈©∑—πŸ «•Ω√ ¡§√• : «◊ªÛ ∫∏ø©¡÷±‚
-
-        chatInputPanel=new JPanel(new FlowLayout());
-        chatInputField = new JTextField(20);
-        chatInputField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if(e.getKeyCode()==KeyEvent.VK_ENTER){
-                    sendBtn.doClick();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
-
-            }
-        });
-        sendBtn = new JButton("Send");
-        sendBtn.addActionListener(new ActionListener() {
-            @Override
-public void actionPerformed(ActionEvent e) {
-                if(chatInputField.getText().length()>0) {
-                    chatArea.append(chatInputField.getText() + "\n");
-                    chatInputField.setText("");
-                }
-            }
-        });
-        chatPanel.add(qScroller,BorderLayout.CENTER);
-        chatPanel.add(chatInputPanel,BorderLayout.SOUTH);
-
-        chatInputPanel.add(chatInputField);
-        chatInputPanel.add(sendBtn);
-
-        setLayout(new BorderLayout());
-        add(paintPanel,BorderLayout.WEST);
-        add(chatPanel,BorderLayout.EAST);
-
-        setBounds(100, 100, 1200, 600);
-        setResizable(true);
-        setVisible(true);
-
-        paintCanvas.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                paintCanvas.setX(e.getX() - 15);
-                paintCanvas.setY(e.getY() - 15);
-                paintCanvas.repaint();
-            }
-        });
-    }
-}
+    
+     public UserInterface(){
+         paintCanvas=new PaintCanvas();
+         colorPanel = new JPanel(new FlowLayout());
+         for(int i=0; i<6; i++){
+             colorBtn[i]=new JButton(colorBtnText[i]);
+             colorBtn[i].setBackground(color[i]);
+             colorPanel.add(colorBtn[i]);
+         }
+         
+         colorBtn[0].addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	 paintCanvas.setC(color[0]);
+             }
+         });
+         
+         colorBtn[1].addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	 paintCanvas.setC(color[1]);
+             }
+         });
+         
+         colorBtn[2].addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	 paintCanvas.setC(color[2]);
+             }
+         });
+         
+         colorBtn[3].addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	 paintCanvas.setC(color[3]);
+             }
+         });
+         
+         colorBtn[4].addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	 paintCanvas.setC(color[4]);
+             }
+         });
+         
+         colorBtn[5].addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	 paintCanvas.setC(color[5]);
+             }
+         });
+         
+         
+         String[] str = { "10", "15", "20", "25", "30" };
+         jcb = new JComboBox(str);
+ 
+         colorPanel.add(jcb);
+ 
+         paintPanel=new JPanel(new BorderLayout());
+         paintPanel.add(colorPanel, BorderLayout.NORTH);
+         paintPanel.add(paintCanvas,BorderLayout.CENTER);
+ 
+         ///
+ 
+         chatPanel=new JPanel(new BorderLayout());
+         chatArea = new JTextArea(15,40);
+         chatArea.setLineWrap(true); //ÏûêÎèô Í∞úÌñâ
+         chatArea.setWrapStyleWord(true); //ÌñâÏùÑ ÎÑòÍ∏∏ Îïå ÌñâÏùò ÎßàÏßÄÎßâ Îã®Ïñ¥Í∞Ä ÎëêÌñâÏóê Í±∏Ï≥ê ÎÇòÎâòÏßÄ ÏïäÎèÑÎ°ù ÌïòÍ∏∞
+         chatArea.setEditable(false);
+         chatArea.setVisible(true);
+         JScrollPane qScroller = new JScrollPane(chatArea);
+         qScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); //ÏàòÏßÅ Ïä§ÌÅ¨Î°§Î∞î ÌëúÏãú Ï†ïÏ±Ö : Ìï≠ÏÉÅ Î≥¥Ïó¨Ï£ºÍ∏∞
+         qScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);// ÏàòÌèâ Ïä§ÌÅ¨Î°§Î∞î ÌëúÏãú Ï†ïÏ±Ö : Ìï≠ÏÉÅ Î≥¥Ïó¨Ï£ºÍ∏∞
+ 
+         chatInputPanel=new JPanel(new FlowLayout());
+         chatInputField = new JTextField(20);
+         chatInputField.addKeyListener(new KeyListener() {
+             @Override
+             public void keyTyped(KeyEvent e) {
+ 
+             }
+ 
+             @Override
+             public void keyPressed(KeyEvent e) {
+                 if(e.getKeyCode()==KeyEvent.VK_ENTER){
+                     sendBtn.doClick();
+                 }
+             }
+ 
+             @Override
+             public void keyReleased(KeyEvent e) {
+ 
+             }
+         });
+         sendBtn = new JButton("Send");
+         sendBtn.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+            	  if(chatInputField.getText().length()>0) {
+            		  while (true) {
+            			  
+          			}
+                  }
+             }
+         });
+         chatPanel.add(qScroller,BorderLayout.CENTER);
+         chatPanel.add(chatInputPanel,BorderLayout.SOUTH);
+ 
+         chatInputPanel.add(chatInputField);
+         chatInputPanel.add(sendBtn);
+ 
+         setLayout(new BorderLayout());
+         add(paintPanel,BorderLayout.WEST);
+         add(chatPanel,BorderLayout.EAST);
+ 
+         setBounds(100, 100, 1200, 600);
+         setResizable(true);
+         setVisible(true);
+ 
+         paintCanvas.addMouseMotionListener(new MouseMotionAdapter() {
+             @Override
+             public void mouseDragged(MouseEvent e) {
+                 paintCanvas.setX(e.getX() - 15);
+                 paintCanvas.setY(e.getY() - 15);
+                 paintCanvas.repaint();
+             }
+         });
+     }
+ 
